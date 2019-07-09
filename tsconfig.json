@@ -9,7 +9,6 @@
     "strict": true,
     "target": "esnext",
     "rootDirs": ["src", "stories"],
-    "baseUrl": "src",
     "jsx": "react"
   },
   "include": ["./src/**/*"],
