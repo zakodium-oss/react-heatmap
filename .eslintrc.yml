@@ -1,0 +1,7 @@
+extends:
+  - cheminfo-typescript
+  - neptune-react
+settings:
+  import/resolver:
+    node:
+      extensions: ['.js', '.ts', '.tsx']
