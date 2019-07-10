@@ -78,8 +78,9 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   const yAccessor: MapNumToNum = (j) => yScale(j);
   const widthAccessor: MapNumToNum = () => elementWidth;
   const heightAccessor: MapNumToNum = () => elementHeight;
-  const colorAccessor: MapNumToStr = (d) =>
-    d > 0 ? colorScalePos(d) : colorScaleNeg(d);
+  const colorAccessor: MapNumToStr = (d) => {
+    return d > 0 ? colorScalePos(d) : colorScaleNeg(d);
+  };
 
   const xAxisAccessor: MapNumToNum = (i) => xScale(i) + elementWidth / 2;
   const yAxisAccessor: MapNumToNum = (i) => yScale(i) + elementHeight / 2;
