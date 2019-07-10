@@ -3,27 +3,27 @@ import React, { Fragment } from 'react';
 import { useContextDimensions } from './Chart';
 import { MapNumToNum } from './types';
 
-interface IXAxisProps {
+interface IYAxisProps {
   labels: string[];
-  xAccessor: MapNumToNum;
+  yAccessor: MapNumToNum;
 }
 
-export default function XAxis(props: IXAxisProps) {
-  const { labels, xAccessor } = props;
+export default function YAxis(props: IYAxisProps) {
+  const { labels, yAccessor } = props;
   const dimensions = useContextDimensions();
   return (
-    <g transform={`translate(0, ${dimensions.boundedHeight})`}>
+    <g transform={`translate(${dimensions.boundedWidth}, 0)`}>
       {labels.map((label, i) => {
-        const x = xAccessor(i);
+        const y = yAccessor(i);
         return (
           <Fragment key={label}>
-            <line x1={x} x2={x} y2="10" stroke="#bdc3c7" />
+            <line y1={y} y2={y} x2="10" stroke="#bdc3c7" />
             <text
               key={label}
-              transform={`translate(${x}, 15)rotate(-45)`}
-              textAnchor="end"
+              transform={`translate(15, ${y})`}
+              textAnchor="start"
               fontSize="0.8em"
-              dominantBaseline="hanging"
+              dominantBaseline="middle"
             >
               {label}
             </text>

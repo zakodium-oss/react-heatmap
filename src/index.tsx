@@ -6,15 +6,17 @@ import Chart from './Chart';
 import Map from './Map';
 import { MapNumToNum, MapNumToStr } from './types';
 import XAxis from './XAxis';
+import YAxis from './YAxis';
 
 interface IHeatmapProps {
   data: number[][];
   xLabels: string[];
+  yLabels: string[];
   dimensions?: ChartDimensionsConfig;
 }
 
 function Heatmap(props: IHeatmapProps): ReactElement {
-  const { data, xLabels } = props;
+  const { data, xLabels, yLabels } = props;
   const [ref, dimensions] = useChartDimensions(props.dimensions || {});
   const domain = getDomain(props.data);
 
@@ -44,11 +46,13 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   };
 
   const xAxisAccessor: MapNumToNum = (i) => xScale(i) + elementWidth / 2;
+  const yAxisAccessor: MapNumToNum = (i) => yScale(i) + elementHeight / 2;
 
   return (
     <div style={{ height: '100%' }} ref={ref}>
       <Chart dimensions={dimensions}>
         <XAxis labels={xLabels} xAccessor={xAxisAccessor} />
+        <YAxis labels={yLabels} yAccessor={yAxisAccessor} />
         <Map
           data={props.data}
           xAccessor={xAccessor}
