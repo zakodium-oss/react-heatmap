@@ -1,6 +1,7 @@
 import React, { memo, ReactElement } from 'react';
 import * as d3 from 'd3';
 import { agnes } from 'ml-hclust';
+import { Matrix } from 'ml-matrix';
 
 import { useChartDimensions, ChartDimensionsConfig } from './utils';
 import Chart from './Chart';
@@ -26,8 +27,17 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   const hierarchy = d3.hierarchy(clustering);
 
   // @ts-ignore
-  // const order = clustering.index.map((leaf) => leaf.index).reverse();
-  // TODO order data based on hierarchy
+  const order = clustering.index.map((leaf) => leaf.index).reverse();
+  const dataCopy = new Matrix(data);
+  const yLabelsCopy = yLabels.slice();
+  for (let i = 0; i < order.length; i++) {
+    if (order[i] !== i) {
+      dataCopy.swapRows(i, order[i]);
+      let label1 = yLabelsCopy[i];
+      yLabelsCopy[i] = yLabelsCopy[order[i]];
+      yLabelsCopy[order[i]] = label1;
+    }
+  }
 
   const xScale = d3
     .scaleLinear()
@@ -60,9 +70,9 @@ function Heatmap(props: IHeatmapProps): ReactElement {
       <Chart dimensions={dimensions}>
         <YDendrogram hierarchy={hierarchy} />
         <XAxis labels={xLabels} xAccessor={xAxisAccessor} />
-        <YAxis labels={yLabels} yAccessor={yAxisAccessor} />
+        <YAxis labels={yLabelsCopy} yAccessor={yAxisAccessor} />
         <Map
-          data={props.data}
+          data={dataCopy.to2DArray()}
           xAccessor={xAccessor}
           yAccessor={yAccessor}
           widthAccessor={widthAccessor}
