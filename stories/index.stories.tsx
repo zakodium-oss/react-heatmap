@@ -13,13 +13,13 @@ const irisData = new Matrix(getNumbers())
   .to2DArray();
 const classes: string[] = getClasses();
 
-storiesOf('Welcome', module).add('to Storybook', () => (
-  <div style={{ width: 600, height: 1200 }}>
+storiesOf('Heatmap', module).add('With labels and y clustering', () => (
+  <div style={{ width: 800, height: 1500 }}>
     <Heatmap
-      dimensions={{
-        marginLeft: 300,
-      }}
+      dimensions={{ marginBottom: 100 }}
       data={irisData}
+      yClustering
+      yClusteringWidth={300}
       xLabels={['sepal length', 'sepal width', 'petal length', 'petal width']}
       yLabels={classes}
     />

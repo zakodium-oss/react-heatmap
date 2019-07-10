@@ -9,7 +9,8 @@
     "strict": true,
     "target": "esnext",
     "rootDirs": ["src", "stories"],
-    "jsx": "react"
+    "jsx": "react",
+    "skipLibCheck": true
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/__tests__"]

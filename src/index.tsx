@@ -13,30 +13,45 @@ import YDendrogram from './YDendrogram';
 
 interface IHeatmapProps {
   data: number[][];
-  xLabels: string[];
-  yLabels: string[];
+  yClustering?: boolean;
+  yClusteringWidth?: number;
+  xLabels?: string[];
+  yLabels?: string[];
   dimensions?: ChartDimensionsConfig;
 }
 
 function Heatmap(props: IHeatmapProps): ReactElement {
-  const { data, xLabels, yLabels } = props;
-  const [ref, dimensions] = useChartDimensions(props.dimensions || {});
-  const domain = getDomain(props.data);
+  const { xLabels, yClustering, yClusteringWidth } = props;
+  let { data, yLabels } = props;
+  const [ref, dimensions] = useChartDimensions(
+    props.dimensions,
+    yClustering ? yClusteringWidth : 0,
+  );
 
-  const clustering = agnes(props.data);
-  const hierarchy = d3.hierarchy(clustering);
+  const domain = getDomain(data);
 
-  // @ts-ignore
-  const order = clustering.index.map((leaf) => leaf.index).reverse();
-  const dataCopy = new Matrix(data);
-  const yLabelsCopy = yLabels.slice();
-  for (let i = 0; i < order.length; i++) {
-    if (order[i] !== i) {
-      dataCopy.swapRows(i, order[i]);
-      let label1 = yLabelsCopy[i];
-      yLabelsCopy[i] = yLabelsCopy[order[i]];
-      yLabelsCopy[order[i]] = label1;
+  let hierarchy = null;
+  if (yClustering) {
+    const cluster = agnes(data);
+    hierarchy = d3.hierarchy(cluster);
+
+    // @ts-ignore
+    const order = cluster.index.map((leaf) => leaf.index).reverse();
+    const dataCopy = new Matrix(data);
+    if (yLabels) {
+      yLabels = yLabels.slice();
     }
+    for (let i = 0; i < order.length; i++) {
+      if (order[i] !== i) {
+        dataCopy.swapRows(i, order[i]);
+        if (yLabels) {
+          let label1 = yLabels[i];
+          yLabels[i] = yLabels[order[i]];
+          yLabels[order[i]] = label1;
+        }
+      }
+    }
+    data = dataCopy.to2DArray();
   }
 
   const xScale = d3
@@ -68,11 +83,11 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   return (
     <div style={{ height: '100%' }} ref={ref}>
       <Chart dimensions={dimensions}>
-        <YDendrogram hierarchy={hierarchy} />
-        <XAxis labels={xLabels} xAccessor={xAxisAccessor} />
-        <YAxis labels={yLabelsCopy} yAccessor={yAxisAccessor} />
+        {hierarchy && <YDendrogram hierarchy={hierarchy} />}
+        {xLabels && <XAxis labels={xLabels} xAccessor={xAxisAccessor} />}
+        {yLabels && <YAxis labels={yLabels} yAccessor={yAxisAccessor} />}
         <Map
-          data={dataCopy.to2DArray()}
+          data={data}
           xAccessor={xAccessor}
           yAccessor={yAccessor}
           widthAccessor={widthAccessor}
