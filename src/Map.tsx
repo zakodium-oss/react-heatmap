@@ -19,10 +19,10 @@ function Map(props: IMapProps) {
       squares.push(
         <rect
           key={`${i}-${j}`}
-          x={props.xAccessor(i)}
-          y={props.yAccessor(j)}
-          width={props.widthAccessor(i)}
-          height={props.heightAccessor(j)}
+          x={props.xAccessor(j)}
+          y={props.yAccessor(i)}
+          width={props.widthAccessor(j)}
+          height={props.heightAccessor(i)}
           fill={props.colorAccessor(data[i][j])}
         />,
       );

@@ -22,28 +22,26 @@ function Heatmap(props: IHeatmapProps): ReactElement {
 
   const xScale = d3
     .scaleLinear()
-    .domain([0, data.length])
+    .domain([0, data[0].length])
     .range([0, dimensions.boundedWidth]);
 
   const yScale = d3
     .scaleLinear()
-    .domain([0, data[0].length])
+    .domain([0, data.length])
     .range([0, dimensions.boundedHeight]);
 
   const colorScale = d3
     .scaleSequential(d3.interpolateRdBu)
     .domain([domain[0], domain[1]]);
 
-  const elementWidth = dimensions.boundedWidth - xScale(data.length - 1);
-  const elementHeight = dimensions.boundedHeight - yScale(data[0].length - 1);
+  const elementWidth = dimensions.boundedWidth - xScale(data[0].length - 1);
+  const elementHeight = dimensions.boundedHeight - yScale(data.length - 1);
 
   const xAccessor: MapNumToNum = (i) => xScale(i);
   const yAccessor: MapNumToNum = (j) => yScale(j);
   const widthAccessor: MapNumToNum = () => elementWidth;
   const heightAccessor: MapNumToNum = () => elementHeight;
-  const colorAccessor: MapNumToStr = (d) => {
-    return colorScale(d);
-  };
+  const colorAccessor: MapNumToStr = (d) => colorScale(d);
 
   const xAxisAccessor: MapNumToNum = (i) => xScale(i) + elementWidth / 2;
   const yAxisAccessor: MapNumToNum = (i) => yScale(i) + elementHeight / 2;
