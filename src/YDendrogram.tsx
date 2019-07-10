@@ -24,6 +24,7 @@ export default function YDendrogram(props: IYDendrogramProps) {
     if (node.parent) {
       lines.push(
         <line
+          key={`v${node.data.distance || node.data.index}`}
           x1={scaleX(node.data.distance)}
           x2={scaleX(node.parent.data.distance)}
           y1={node.x}
@@ -35,6 +36,7 @@ export default function YDendrogram(props: IYDendrogramProps) {
     if (node.children) {
       lines.push(
         <line
+          key={`h${node.data.distance || node.data.index}`}
           x1={scaleX(node.data.distance)}
           x2={scaleX(node.data.distance)}
           y1={node.children[0].x}

@@ -5,6 +5,7 @@ import { Matrix } from 'ml-matrix';
 import { getNumbers, getClasses } from 'ml-dataset-iris';
 
 import Heatmap from '../src/index';
+
 import { data, xLabels, yLabels } from './data';
 
 const irisData = new Matrix(getNumbers())
