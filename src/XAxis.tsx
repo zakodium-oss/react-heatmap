@@ -16,10 +16,9 @@ export default function XAxis(props: IXAxisProps) {
       {labels.map((label, i) => {
         const x = xAccessor(i);
         return (
-          <Fragment key={label}>
+          <Fragment key={i}>
             <line x1={x} x2={x} y2="10" stroke="#bdc3c7" />
             <text
-              key={label}
               transform={`translate(${x}, 15)rotate(-45)`}
               textAnchor="end"
               fontSize="0.8em"

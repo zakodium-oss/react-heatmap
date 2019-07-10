@@ -16,10 +16,9 @@ export default function YAxis(props: IYAxisProps) {
       {labels.map((label, i) => {
         const y = yAccessor(i);
         return (
-          <Fragment key={label}>
+          <Fragment key={i}>
             <line y1={y} y2={y} x2="10" stroke="#bdc3c7" />
             <text
-              key={label}
               transform={`translate(15, ${y})`}
               textAnchor="start"
               fontSize="0.8em"
