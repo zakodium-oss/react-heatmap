@@ -68,6 +68,8 @@
     "eslint-plugin-jest": "^22.7.2",
     "eslint-plugin-react": "^7.14.2",
     "jest": "^24.8.0",
+    "ml-dataset-iris": "^1.0.0",
+    "ml-matrix": "^6.1.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "rimraf": "^2.6.3",
@@ -76,7 +78,7 @@
   },
   "dependencies": {
     "d3": "^5.9.7",
-    "ml-hclust": "^2.0.1",
+    "ml-hclust": "^2.0.2",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

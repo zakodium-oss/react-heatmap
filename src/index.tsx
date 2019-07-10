@@ -1,5 +1,6 @@
 import React, { memo, ReactElement } from 'react';
 import * as d3 from 'd3';
+import { agnes } from 'ml-hclust';
 
 import { useChartDimensions, ChartDimensionsConfig } from './utils';
 import Chart from './Chart';
@@ -7,6 +8,7 @@ import Map from './Map';
 import { MapNumToNum, MapNumToStr } from './types';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
+import YDendrogram from './YDendrogram';
 
 interface IHeatmapProps {
   data: number[][];
@@ -19,6 +21,13 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   const { data, xLabels, yLabels } = props;
   const [ref, dimensions] = useChartDimensions(props.dimensions || {});
   const domain = getDomain(props.data);
+
+  const clustering = agnes(props.data);
+  const hierarchy = d3.hierarchy(clustering);
+
+  // @ts-ignore
+  // const order = clustering.index.map((leaf) => leaf.index).reverse();
+  // TODO order data based on hierarchy
 
   const xScale = d3
     .scaleLinear()
@@ -49,6 +58,7 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   return (
     <div style={{ height: '100%' }} ref={ref}>
       <Chart dimensions={dimensions}>
+        <YDendrogram hierarchy={hierarchy} />
         <XAxis labels={xLabels} xAccessor={xAxisAccessor} />
         <YAxis labels={yLabels} yAccessor={yAxisAccessor} />
         <Map
