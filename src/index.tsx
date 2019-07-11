@@ -32,7 +32,7 @@ function Heatmap(props: IHeatmapProps): ReactElement {
 
   let hierarchy = null;
   if (yClustering) {
-    const cluster = agnes(data);
+    const cluster = agnes(data, { method: 'ward' });
     hierarchy = d3.hierarchy(cluster);
 
     // @ts-ignore
@@ -64,9 +64,12 @@ function Heatmap(props: IHeatmapProps): ReactElement {
     .domain([0, data.length])
     .range([0, dimensions.boundedHeight]);
 
-  const colorScale = d3
+  const colorScalePos = d3
     .scaleSequential(d3.interpolateRdBu)
-    .domain([domain[0], domain[1]]);
+    .domain([domain[1], -domain[1]]);
+  const colorScaleNeg = d3
+    .scaleSequential(d3.interpolateRdBu)
+    .domain([-domain[0], domain[0]]);
 
   const elementWidth = dimensions.boundedWidth - xScale(data[0].length - 1);
   const elementHeight = dimensions.boundedHeight - yScale(data.length - 1);
@@ -75,7 +78,8 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   const yAccessor: MapNumToNum = (j) => yScale(j);
   const widthAccessor: MapNumToNum = () => elementWidth;
   const heightAccessor: MapNumToNum = () => elementHeight;
-  const colorAccessor: MapNumToStr = (d) => colorScale(d);
+  const colorAccessor: MapNumToStr = (d) =>
+    d > 0 ? colorScalePos(d) : colorScaleNeg(d);
 
   const xAxisAccessor: MapNumToNum = (i) => xScale(i) + elementWidth / 2;
   const yAxisAccessor: MapNumToNum = (i) => yScale(i) + elementHeight / 2;
