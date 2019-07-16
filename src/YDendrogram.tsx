@@ -16,17 +16,18 @@ export default function YDendrogram(props: IYDendrogramProps) {
 
   const scaleX = d3
     .scaleLinear()
-    .domain([cluster.data.distance, 0])
+    .domain([cluster.data.height, 0])
     .range([0, dimensions.marginLeft - 5]);
 
   const lines: any[] = [];
+  let key = 0;
   cluster.eachAfter((node) => {
     if (node.parent) {
       lines.push(
         <line
-          key={`v${node.data.distance || node.data.index}`}
-          x1={scaleX(node.data.distance)}
-          x2={scaleX(node.parent.data.distance)}
+          key={key++}
+          x1={scaleX(node.data.height)}
+          x2={scaleX(node.parent.data.height)}
           y1={node.x}
           y2={node.x}
           stroke="black"
@@ -36,9 +37,9 @@ export default function YDendrogram(props: IYDendrogramProps) {
     if (node.children) {
       lines.push(
         <line
-          key={`h${node.data.distance || node.data.index}`}
-          x1={scaleX(node.data.distance)}
-          x2={scaleX(node.data.distance)}
+          key={key++}
+          x1={scaleX(node.data.height)}
+          x2={scaleX(node.data.height)}
           y1={node.children[0].x}
           y2={node.children[node.children.length - 1].x}
           stroke="black"

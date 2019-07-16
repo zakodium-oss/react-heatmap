@@ -7,23 +7,30 @@ interface IMapProps {
   colorAccessor: MapNumToStr;
   xAccessor: MapNumToNum;
   yAccessor: MapNumToNum;
-  widthAccessor: MapNumToNum;
-  heightAccessor: MapNumToNum;
+  elementWidth: number;
+  elementHeight: number;
 }
 
 function Map(props: IMapProps) {
-  const { data } = props;
+  const {
+    data,
+    xAccessor,
+    yAccessor,
+    elementHeight,
+    elementWidth,
+    colorAccessor,
+  } = props;
   const squares = [];
   for (let i = 0; i < data.length; i++) {
     for (let j = 0; j < data[i].length; j++) {
       squares.push(
         <rect
           key={`${i}-${j}`}
-          x={props.xAccessor(j)}
-          y={props.yAccessor(i)}
-          width={props.widthAccessor(j)}
-          height={props.heightAccessor(i)}
-          fill={props.colorAccessor(data[i][j])}
+          x={xAccessor(j)}
+          y={yAccessor(i)}
+          width={elementWidth}
+          height={elementHeight}
+          fill={colorAccessor(data[i][j])}
         />,
       );
     }

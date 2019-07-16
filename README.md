@@ -1,23 +1,32 @@
 # @zakodium/react-heatmap
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
-[![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
-.
+Display beautiful SVG heat maps.
 
 ## Installation
 
 `$ npm i @zakodium/react-heatmap`
 
+## Live examples
+
+https://zakodium.github.io/react-heatmap
+
 ## Usage
 
-```js
-import { myModule } from '@zakodium/react-heatmap';
+```jsx
+import { Heatmap } from '@zakodium/react-heatmap';
 
-const result = myModule(args);
-// result is ...
+function App() {
+  return (
+    <Heatmap
+      dimensions={{ height: 600 }} // Do not specify width and let it be responsive
+      data={[[-20, -15, -10], [-5, 0, 5], [10, 15, 20]]}
+      xLabels={['Column 1', 'Column 2', 'Column 3']}
+    />
+  );
+}
 ```
 
 ## License
@@ -26,9 +35,5 @@ const result = myModule(args);
 
 [npm-image]: https://img.shields.io/npm/v/@zakodium/react-heatmap.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/@zakodium/react-heatmap
-[travis-image]: https://img.shields.io/travis/com/zakodium/react-heatmap/master.svg?style=flat-square
-[travis-url]: https://travis-ci.com/zakodium/react-heatmap
-[codecov-image]: https://img.shields.io/codecov/c/github/zakodium/react-heatmap.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/zakodium/react-heatmap
 [download-image]: https://img.shields.io/npm/dm/@zakodium/react-heatmap.svg?style=flat-square
 [download-url]: https://www.npmjs.com/package/@zakodium/react-heatmap

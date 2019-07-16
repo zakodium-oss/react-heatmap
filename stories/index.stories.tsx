@@ -1,42 +1,74 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import { Matrix } from 'ml-matrix';
+import * as d3 from 'd3';
 // @ts-ignore
 import { getNumbers, getClasses } from 'ml-dataset-iris';
 
-import Heatmap from '../src/index';
+import { Heatmap } from '../src/index';
 
-import { data, xLabels, yLabels } from './data';
-
-const irisData = new Matrix(getNumbers())
-  // .transpose()
+const irisNumbers = new Matrix(getNumbers());
+const irisData = irisNumbers
   .center('column')
   .scale('column')
   .to2DArray();
 const classes: string[] = getClasses();
 
+const minValue = irisNumbers.min();
+const maxValue = irisNumbers.max();
+const convertScale = d3.scaleLinear().range([minValue, maxValue]);
+const colorScaleNeg = d3
+  .scaleSequential(d3.interpolateRdBu)
+  .domain([minValue, -minValue]);
+const colorScalePos = d3
+  .scaleSequential(d3.interpolateRdBu)
+  .domain([-maxValue, maxValue]);
+function customColorScale(value: number) {
+  const converted = convertScale(value);
+  return converted < 0 ? colorScaleNeg(converted) : colorScalePos(converted);
+}
+
 storiesOf('Heatmap', module)
-  .add('With labels and y clustering', () => (
-    <div style={{ height: 1500 }}>
-      <Heatmap
-        dimensions={{ marginBottom: 100, marginRight: 150 }}
-        data={irisData}
-        yClustering={true}
-        yClusteringWidth={300}
-        xLabels={['sepal length', 'sepal width', 'petal length', 'petal width']}
-        yLabels={classes}
-      />
-    </div>
+  .add('Simple example', () => (
+    <Heatmap
+      dimensions={{ height: 600 }}
+      data={[[-20, -15, -10], [-5, 0, 5], [10, 15, 20]]}
+      xLabels={['Column 1', 'Column 2', 'Column 3']}
+    />
   ))
-  .add('demo', () => (
-    <div style={{ width: 800, height: 1500 }}>
-      <Heatmap
-        dimensions={{ marginBottom: 100 }}
-        data={data}
-        yClustering
-        yClusteringWidth={300}
-        xLabels={xLabels}
-        yLabels={yLabels}
-      />
-    </div>
-  ));
+  .add('Iris dataset with all options', () => {
+    const wantXLabels = boolean('Show X labels', true);
+    const wantYLabels = boolean('Show Y labels', true);
+    const yClusteringMethod = select(
+      'Y clustering method',
+      {
+        'Single linkage': 'single',
+        'Complete linkage': 'complete',
+        'Unweighted average linkage (UPGMA)': 'average',
+        'Weighted average linkage (WPGMA)': 'wpgma',
+        'Centroid linkage (UPGMC)': 'centroid',
+        Ward: 'ward',
+        'Ward 2': 'ward2',
+      },
+      'complete',
+    );
+    return (
+      <div style={{ height: number('Height', 1500) }}>
+        <Heatmap
+          dimensions={{ marginBottom: 100, marginRight: 150 }}
+          data={irisData}
+          colorScale={customColorScale}
+          yClustering={boolean('Y clustering', true)}
+          yClusteringWidth={number('Y clustering width', 100)}
+          yClusteringMethod={yClusteringMethod}
+          xLabels={
+            wantXLabels
+              ? ['sepal length', 'sepal width', 'petal length', 'petal width']
+              : undefined
+          }
+          yLabels={wantYLabels ? classes : undefined}
+        />
+      </div>
+    );
+  });

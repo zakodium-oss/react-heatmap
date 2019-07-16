@@ -8,3 +8,4 @@ settings:
 rules:
   '@typescript-eslint/explicit-function-return-type': off
   react/jsx-no-bind: off
+  react/no-array-index-key: off

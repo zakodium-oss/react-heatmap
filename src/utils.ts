@@ -19,7 +19,7 @@ interface IChartBounds {
 }
 
 export type ChartDimensionsConfig = Partial<IChartMargins> &
-  Partial<IChartWidthHeight>;
+Partial<IChartWidthHeight>;
 
 export type ChartDimensions = IChartMargins & IChartWidthHeight & IChartBounds;
 

@@ -1,57 +1,71 @@
-import React, { memo, ReactElement } from 'react';
+import React, { memo, ReactElement, useMemo } from 'react';
 import * as d3 from 'd3';
-import { agnes } from 'ml-hclust';
+import { agnes, AgglomerationMethod } from 'ml-hclust';
 import { Matrix } from 'ml-matrix';
 
 import { useChartDimensions, ChartDimensionsConfig } from './utils';
 import Chart from './Chart';
 import Map from './Map';
-import { MapNumToNum, MapNumToStr } from './types';
+import { MapNumToNum } from './types';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import YDendrogram from './YDendrogram';
 
-interface IHeatmapProps {
+export interface IHeatmapProps {
   data: number[][];
+  dimensions?: ChartDimensionsConfig;
+  colorScale?: (value: number) => string;
   yClustering?: boolean;
   yClusteringWidth?: number;
+  yClusteringMethod?: AgglomerationMethod;
   xLabels?: string[];
   yLabels?: string[];
-  dimensions?: ChartDimensionsConfig;
 }
 
-function Heatmap(props: IHeatmapProps): ReactElement {
-  const { xLabels, yClustering, yClusteringWidth } = props;
+export const Heatmap = memo(function Heatmap(
+  props: IHeatmapProps,
+): ReactElement {
+  const {
+    xLabels,
+    yClustering,
+    yClusteringWidth,
+    yClusteringMethod = 'complete',
+    colorScale = d3.interpolateYlOrRd,
+  } = props;
   let { data, yLabels } = props;
   const [ref, dimensions] = useChartDimensions(
     props.dimensions,
     yClustering ? yClusteringWidth : 0,
   );
 
-  const domain = getDomain(data);
+  const domain = useMemo(() => getDomain(data), [data]);
 
   let hierarchy = null;
   if (yClustering) {
-    const cluster = agnes(data, { method: 'ward' });
+    const cluster = agnes(data, {
+      method: yClusteringMethod,
+    });
     hierarchy = d3.hierarchy(cluster);
 
-    // @ts-ignore
-    const order = cluster.index.map((leaf) => leaf.index).reverse();
     const dataCopy = new Matrix(data);
+    let yLabelsCopy;
     if (yLabels) {
-      yLabels = yLabels.slice();
+      yLabelsCopy = yLabels.slice();
     }
+
+    const order = cluster.indices();
     for (let i = 0; i < order.length; i++) {
       if (order[i] !== i) {
-        dataCopy.swapRows(i, order[i]);
-        if (yLabels) {
-          let label1 = yLabels[i];
-          yLabels[i] = yLabels[order[i]];
-          yLabels[order[i]] = label1;
+        dataCopy.setRow(i, data[order[i]]);
+        if (yLabelsCopy && yLabels) {
+          yLabelsCopy[i] = yLabels[order[i]];
         }
       }
     }
     data = dataCopy.to2DArray();
+    if (yLabelsCopy) {
+      yLabels = yLabelsCopy;
+    }
   }
 
   const xScale = d3
@@ -64,23 +78,10 @@ function Heatmap(props: IHeatmapProps): ReactElement {
     .domain([0, data.length])
     .range([0, dimensions.boundedHeight]);
 
-  const colorScalePos = d3
-    .scaleSequential(d3.interpolateRdBu)
-    .domain([domain[1], -domain[1]]);
-  const colorScaleNeg = d3
-    .scaleSequential(d3.interpolateRdBu)
-    .domain([-domain[0], domain[0]]);
+  const colorAccessor = d3.scaleSequential(colorScale).domain(domain);
 
   const elementWidth = dimensions.boundedWidth - xScale(data[0].length - 1);
   const elementHeight = dimensions.boundedHeight - yScale(data.length - 1);
-
-  const xAccessor: MapNumToNum = (i) => xScale(i);
-  const yAccessor: MapNumToNum = (j) => yScale(j);
-  const widthAccessor: MapNumToNum = () => elementWidth;
-  const heightAccessor: MapNumToNum = () => elementHeight;
-  const colorAccessor: MapNumToStr = (d) => {
-    return d > 0 ? colorScalePos(d) : colorScaleNeg(d);
-  };
 
   const xAxisAccessor: MapNumToNum = (i) => xScale(i) + elementWidth / 2;
   const yAxisAccessor: MapNumToNum = (i) => yScale(i) + elementHeight / 2;
@@ -88,21 +89,21 @@ function Heatmap(props: IHeatmapProps): ReactElement {
   return (
     <div style={{ height: '100%' }} ref={ref}>
       <Chart dimensions={dimensions}>
-        {hierarchy && <YDendrogram hierarchy={hierarchy} />}
         {xLabels && <XAxis labels={xLabels} xAccessor={xAxisAccessor} />}
         {yLabels && <YAxis labels={yLabels} yAccessor={yAxisAccessor} />}
         <Map
           data={data}
-          xAccessor={xAccessor}
-          yAccessor={yAccessor}
-          widthAccessor={widthAccessor}
-          heightAccessor={heightAccessor}
+          xAccessor={xScale}
+          yAccessor={yScale}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
           colorAccessor={colorAccessor}
         />
+        {hierarchy && <YDendrogram hierarchy={hierarchy} />}
       </Chart>
     </div>
   );
-}
+});
 
 function getDomain(data: number[][]): [number, number] {
   let globalMin = Infinity;
@@ -117,5 +118,3 @@ function getDomain(data: number[][]): [number, number] {
   }
   return [globalMin, globalMax];
 }
-
-export default memo(Heatmap);
