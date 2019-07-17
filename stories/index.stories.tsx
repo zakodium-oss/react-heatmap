@@ -8,11 +8,10 @@ import { getNumbers, getClasses } from 'ml-dataset-iris';
 
 import { Heatmap } from '../src/index';
 
-const irisNumbers = new Matrix(getNumbers());
-const irisData = irisNumbers
+const irisNumbers = new Matrix(getNumbers())
   .center('column')
-  .scale('column')
-  .to2DArray();
+  .scale('column');
+const irisData = irisNumbers.to2DArray();
 const classes: string[] = getClasses();
 
 const minValue = irisNumbers.min();
