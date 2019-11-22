@@ -19,7 +19,7 @@ interface IChartBounds {
 }
 
 export type ChartDimensionsConfig = Partial<IChartMargins> &
-Partial<IChartWidthHeight>;
+  Partial<IChartWidthHeight>;
 
 export type ChartDimensions = IChartMargins & IChartWidthHeight & IChartBounds;
 
@@ -58,7 +58,7 @@ function combineChartDimensions(
 
 export function useChartDimensions(
   dimensionsConfig: ChartDimensionsConfig = {},
-  yClusteringWidth: number = 100,
+  yClusteringWidth = 100,
 ): [MutableRefObject<any>, ChartDimensions] {
   const ref = useRef<Element>();
   const dimensions = useMemo(

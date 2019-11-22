@@ -8,9 +8,7 @@ import { getNumbers, getClasses } from 'ml-dataset-iris';
 
 import { Heatmap } from '../src/index';
 
-const irisNumbers = new Matrix(getNumbers())
-  .center('column')
-  .scale('column');
+const irisNumbers = new Matrix(getNumbers()).center('column').scale('column');
 const irisData = irisNumbers.to2DArray();
 const classes: string[] = getClasses();
 
@@ -32,7 +30,11 @@ storiesOf('Heatmap', module)
   .add('Simple example', () => (
     <Heatmap
       dimensions={{ height: 600 }}
-      data={[[-20, -15, -10], [-5, 0, 5], [10, 15, 20]]}
+      data={[
+        [-20, -15, -10],
+        [-5, 0, 5],
+        [10, 15, 20],
+      ]}
       xLabels={['Column 1', 'Column 2', 'Column 3']}
     />
   ))

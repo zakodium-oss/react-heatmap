@@ -23,9 +23,7 @@ const Chart: FunctionComponent<IChartProps> = ({ dimensions, children }) => (
       height={dimensions.height}
     >
       <g
-        transform={`translate(${dimensions.marginLeft}, ${
-          dimensions.marginTop
-        })`}
+        transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
       >
         {children}
       </g>
