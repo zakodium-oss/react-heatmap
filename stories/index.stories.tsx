@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number, select, text } from '@storybook/addon-knobs';
 import { Matrix } from 'ml-matrix';
 import * as d3 from 'd3';
 // @ts-ignore
@@ -39,6 +39,8 @@ storiesOf('Heatmap', module)
     />
   ))
   .add('Iris dataset with all options', () => {
+    const wantLegend = boolean('Show legend', true);
+    const legendTitle = text('Legend title', 'Iris values (normalized)');
     const wantXLabels = boolean('Show X labels', true);
     const wantYLabels = boolean('Show Y labels', true);
     const yClusteringMethod = select(
@@ -60,6 +62,8 @@ storiesOf('Heatmap', module)
           dimensions={{ marginBottom: 100, marginRight: 150 }}
           data={irisData}
           colorScale={customColorScale}
+          showLegend={wantLegend}
+          legendTitle={legendTitle}
           yClustering={boolean('Y clustering', true)}
           yClusteringWidth={number('Y clustering width', 100)}
           yClusteringMethod={yClusteringMethod}

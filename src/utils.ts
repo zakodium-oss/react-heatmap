@@ -26,6 +26,7 @@ export type ChartDimensions = IChartMargins & IChartWidthHeight & IChartBounds;
 function combineChartDimensions(
   config: ChartDimensionsConfig,
   additionalMarginLeft: number,
+  additionalMarginTop: number,
 ): ChartDimensions {
   let parsedDimensions = {
     marginTop: 40,
@@ -38,6 +39,7 @@ function combineChartDimensions(
   };
 
   parsedDimensions.marginLeft += additionalMarginLeft;
+  parsedDimensions.marginTop += additionalMarginTop;
 
   return {
     ...parsedDimensions,
@@ -58,12 +60,18 @@ function combineChartDimensions(
 
 export function useChartDimensions(
   dimensionsConfig: ChartDimensionsConfig = {},
-  yClusteringWidth = 100,
+  additionalMarginLeft: number,
+  additionalMarginTop: number,
 ): [MutableRefObject<any>, ChartDimensions] {
   const ref = useRef<Element>();
   const dimensions = useMemo(
-    () => combineChartDimensions(dimensionsConfig, yClusteringWidth),
-    [dimensionsConfig, yClusteringWidth],
+    () =>
+      combineChartDimensions(
+        dimensionsConfig,
+        additionalMarginLeft,
+        additionalMarginTop,
+      ),
+    [dimensionsConfig, additionalMarginLeft, additionalMarginTop],
   );
 
   const [width, changeWidth] = useState(0);
@@ -98,6 +106,7 @@ export function useChartDimensions(
       width: dimensions.width || width,
       height: dimensions.height || height,
     },
+    0,
     0,
   );
 

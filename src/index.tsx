@@ -10,11 +10,14 @@ import { MapNumToNum } from './types';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import YDendrogram from './YDendrogram';
+import Legend from './Legend';
 
 export interface IHeatmapProps {
   data: number[][];
   dimensions?: ChartDimensionsConfig;
   colorScale?: (value: number) => string;
+  showLegend?: boolean;
+  legendTitle?: string;
   yClustering?: boolean;
   yClusteringWidth?: number;
   yClusteringMethod?: AgglomerationMethod;
@@ -22,19 +25,23 @@ export interface IHeatmapProps {
   yLabels?: string[];
 }
 
+const legendOffset = 100;
+
 export const Heatmap = memo(function Heatmap(
   props: IHeatmapProps,
 ): ReactElement {
   const {
     xLabels,
     yClustering,
-    yClusteringWidth,
+    yClusteringWidth = 100,
     yClusteringMethod = 'complete',
     colorScale = d3.interpolateYlOrRd,
+    showLegend = false,
   } = props;
   const [ref, dimensions] = useChartDimensions(
     props.dimensions,
     yClustering ? yClusteringWidth : 0,
+    showLegend ? legendOffset : 0,
   );
 
   const domain = useMemo(() => getDomain(props.data), [props.data]);
@@ -90,6 +97,14 @@ export const Heatmap = memo(function Heatmap(
       <Chart dimensions={dimensions}>
         {xLabels && <XAxis labels={xLabels} xAccessor={xAxisAccessor} />}
         {yLabels && <YAxis labels={yLabels} yAccessor={yAxisAccessor} />}
+        {showLegend && (
+          <Legend
+            offset={legendOffset}
+            colorAccessor={colorScale}
+            title={props.legendTitle || ''}
+            domain={domain}
+          />
+        )}
         <Map
           data={data}
           xAccessor={xScale}
