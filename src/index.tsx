@@ -32,41 +32,40 @@ export const Heatmap = memo(function Heatmap(
     yClusteringMethod = 'complete',
     colorScale = d3.interpolateYlOrRd,
   } = props;
-  let { data, yLabels } = props;
   const [ref, dimensions] = useChartDimensions(
     props.dimensions,
     yClustering ? yClusteringWidth : 0,
   );
 
-  const domain = useMemo(() => getDomain(data), [data]);
+  const domain = useMemo(() => getDomain(props.data), [props.data]);
 
-  let hierarchy = null;
-  if (yClustering) {
-    const cluster = agnes(data, {
+  const [hierarchy, yLabels, data] = useMemo(() => {
+    if (!yClustering) {
+      return [null, props.yLabels, props.data];
+    }
+    const cluster = agnes(props.data, {
       method: yClusteringMethod,
     });
-    hierarchy = d3.hierarchy(cluster);
+    const d3Hierarchy = d3.hierarchy(cluster);
 
-    const dataCopy = new Matrix(data);
+    const dataCopy = new Matrix(props.data);
     let yLabelsCopy;
-    if (yLabels) {
-      yLabelsCopy = yLabels.slice();
+    if (props.yLabels) {
+      yLabelsCopy = props.yLabels.slice();
     }
 
     const order = cluster.indices();
     for (let i = 0; i < order.length; i++) {
       if (order[i] !== i) {
-        dataCopy.setRow(i, data[order[i]]);
-        if (yLabelsCopy && yLabels) {
-          yLabelsCopy[i] = yLabels[order[i]];
+        dataCopy.setRow(i, props.data[order[i]]);
+        if (yLabelsCopy && props.yLabels) {
+          yLabelsCopy[i] = props.yLabels[order[i]];
         }
       }
     }
-    data = dataCopy.to2DArray();
-    if (yLabelsCopy) {
-      yLabels = yLabelsCopy;
-    }
-  }
+
+    return [d3Hierarchy, yLabelsCopy, dataCopy.to2DArray()];
+  }, [yClustering, yClusteringMethod, props.yLabels, props.data]);
 
   const xScale = d3
     .scaleLinear()
