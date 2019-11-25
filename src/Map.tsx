@@ -1,4 +1,4 @@
-import React, { memo, Fragment } from 'react';
+import React, { memo } from 'react';
 
 import { MapNumToNum, MapNumToStr } from './types';
 
@@ -35,7 +35,7 @@ function Map(props: IMapProps) {
       );
     }
   }
-  return <Fragment>{squares}</Fragment>;
+  return <g>{squares}</g>;
 }
 
 export default memo(Map);
