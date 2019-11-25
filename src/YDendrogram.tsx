@@ -17,7 +17,7 @@ export default function YDendrogram(props: IYDendrogramProps) {
   const scaleX = d3
     .scaleLinear()
     .domain([cluster.data.height, 0])
-    .range([0, dimensions.marginLeft - 5]);
+    .range([5, dimensions.marginLeft - 5]);
 
   const lines: any[] = [];
   let key = 0;
