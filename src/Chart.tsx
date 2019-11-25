@@ -21,6 +21,7 @@ const Chart: FunctionComponent<IChartProps> = ({ dimensions, children }) => (
       style={{ overflow: 'visible' }}
       width={dimensions.width}
       height={dimensions.height}
+      xmlns="http://www.w3.org/2000/svg"
     >
       <g
         transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
