@@ -29,7 +29,7 @@ export interface IHeatmapProps {
   yLabels?: string[];
 }
 
-const legendOffset = 130;
+const legendOffset = 80;
 
 export const Heatmap = memo(function Heatmap(
   props: IHeatmapProps,
