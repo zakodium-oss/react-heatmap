@@ -13,7 +13,8 @@ export default function YDendrogram(props: IYDendrogramProps) {
   const dimensions = useContextDimensions();
   const cluster = d3
     .cluster<Cluster>()
-    .size([dimensions.boundedHeight, props.width])(props.hierarchy);
+    .size([dimensions.boundedHeight, props.width])
+    .separation(() => 1)(props.hierarchy);
 
   const scaleX = d3
     .scaleLinear()
