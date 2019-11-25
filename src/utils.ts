@@ -29,10 +29,10 @@ function combineChartDimensions(
   additionalMarginTop: number,
 ): ChartDimensions {
   let parsedDimensions = {
-    marginTop: 40,
-    marginRight: 30,
-    marginBottom: 40,
-    marginLeft: 75,
+    marginTop: 5,
+    marginRight: 5,
+    marginBottom: 5,
+    marginLeft: 5,
     width: 0,
     height: 0,
     ...config,

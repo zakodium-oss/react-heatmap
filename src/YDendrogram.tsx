@@ -6,20 +6,21 @@ import { useContextDimensions } from './Chart';
 
 interface IYDendrogramProps {
   hierarchy: d3.HierarchyNode<Cluster>;
+  width: number;
 }
 
 export default function YDendrogram(props: IYDendrogramProps) {
   const dimensions = useContextDimensions();
   const cluster = d3
     .cluster<Cluster>()
-    .size([dimensions.boundedHeight, dimensions.marginLeft])(props.hierarchy);
+    .size([dimensions.boundedHeight, props.width])(props.hierarchy);
 
   const scaleX = d3
     .scaleLinear()
     .domain([cluster.data.height, 0])
-    .range([5, dimensions.marginLeft - 5]);
+    .range([0, props.width - 5]);
 
-  const lines: any[] = [];
+  const lines: JSX.Element[] = [];
   let key = 0;
   cluster.eachAfter((node) => {
     if (node.parent) {
@@ -47,5 +48,5 @@ export default function YDendrogram(props: IYDendrogramProps) {
       );
     }
   });
-  return <g transform={`translate(-${dimensions.marginLeft}, 0)`}>{lines}</g>;
+  return <g transform={`translate(-${props.width}, 0)`}>{lines}</g>;
 }

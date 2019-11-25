@@ -21,7 +21,7 @@ export default function Legend(props: LegendProps) {
   const ticks = scale.ticks(5);
 
   return (
-    <g transform={`translate(0, -${props.offset + 20})`}>
+    <g transform={`translate(0, -${props.offset})`}>
       <defs>{gradient}</defs>
       <rect x="0" y="0" width="150" height="70" fill="url(#legend-gradient)" />
       {ticks.map((tickValue, i) => {

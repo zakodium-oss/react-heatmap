@@ -57,15 +57,20 @@ storiesOf('Heatmap', module)
       'complete',
     );
     return (
-      <div style={{ height: number('Height', 1500) }}>
+      <div style={{ height: number('Height', 1800) }}>
         <Heatmap
-          dimensions={{ marginBottom: 100, marginRight: 150 }}
+          dimensions={{
+            marginLeft: number('Left margin', 5),
+            marginTop: number('Top margin', 5),
+            marginBottom: number('Bottom margin', 100),
+            marginRight: number('Right margin', 150),
+          }}
           data={irisData}
           colorScale={customColorScale}
           showLegend={wantLegend}
           legendTitle={legendTitle}
           yClustering={boolean('Y clustering', true)}
-          yClusteringWidth={number('Y clustering width', 100)}
+          yClusteringWidth={number('Y clustering width', 175)}
           yClusteringMethod={yClusteringMethod}
           xLabels={
             wantXLabels
