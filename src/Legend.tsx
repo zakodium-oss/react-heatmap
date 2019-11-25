@@ -2,15 +2,16 @@ import React, { ReactNode, Fragment } from 'react';
 import * as d3 from 'd3';
 
 import { MapNumToStr } from './types';
+import { useContextDimensions } from './Chart';
 
 interface LegendProps {
-  offset: number;
   colorAccessor: MapNumToStr;
   title: string;
   domain: [number, number];
 }
 
 export default function Legend(props: LegendProps) {
+  const dimensions = useContextDimensions();
   const gradient = useLinearGradient(props.colorAccessor);
 
   const scale = d3
@@ -21,7 +22,9 @@ export default function Legend(props: LegendProps) {
   const ticks = scale.ticks(5);
 
   return (
-    <g transform={`translate(0, -${props.offset})`}>
+    <g
+      transform={`translate(-${dimensions.additionalMarginLeft}, -${dimensions.additionalMarginTop})`}
+    >
       <defs>{gradient}</defs>
       <rect x="0" y="0" width="150" height="70" fill="url(#legend-gradient)" />
       {ticks.map((tickValue, i) => {

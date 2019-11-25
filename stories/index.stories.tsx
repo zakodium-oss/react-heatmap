@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { boolean, number, select, text } from '@storybook/addon-knobs';
 import { Matrix } from 'ml-matrix';
 import * as d3 from 'd3';
-// @ts-ignore
+import { AgglomerationMethod } from 'ml-hclust';
 import { getNumbers, getClasses } from 'ml-dataset-iris';
 
 import { Heatmap } from '../src/index';
@@ -26,6 +26,16 @@ function customColorScale(value: number) {
   return converted < 0 ? colorScaleNeg(converted) : colorScalePos(converted);
 }
 
+const clusteringMethods: Record<string, AgglomerationMethod> = {
+  'Single linkage': 'single',
+  'Complete linkage': 'complete',
+  'Unweighted average linkage (UPGMA)': 'average',
+  'Weighted average linkage (WPGMA)': 'wpgma',
+  'Centroid linkage (UPGMC)': 'centroid',
+  Ward: 'ward',
+  'Ward 2': 'ward2',
+};
+
 storiesOf('Heatmap', module)
   .add('Simple example', () => (
     <Heatmap
@@ -43,19 +53,6 @@ storiesOf('Heatmap', module)
     const legendTitle = text('Legend title', 'Iris values (normalized)');
     const wantXLabels = boolean('Show X labels', true);
     const wantYLabels = boolean('Show Y labels', true);
-    const yClusteringMethod = select(
-      'Y clustering method',
-      {
-        'Single linkage': 'single',
-        'Complete linkage': 'complete',
-        'Unweighted average linkage (UPGMA)': 'average',
-        'Weighted average linkage (WPGMA)': 'wpgma',
-        'Centroid linkage (UPGMC)': 'centroid',
-        Ward: 'ward',
-        'Ward 2': 'ward2',
-      },
-      'complete',
-    );
     return (
       <div style={{ height: number('Height', 1800) }}>
         <Heatmap
@@ -67,11 +64,22 @@ storiesOf('Heatmap', module)
           }}
           data={irisData}
           colorScale={customColorScale}
-          showLegend={wantLegend}
+          legend={wantLegend}
           legendTitle={legendTitle}
+          xClustering={boolean('X clustering', true)}
+          xClusteringHeight={number('X clustering height', 150)}
+          xClusteringMethod={select(
+            'X clustering method',
+            clusteringMethods,
+            'complete',
+          )}
           yClustering={boolean('Y clustering', true)}
-          yClusteringWidth={number('Y clustering width', 175)}
-          yClusteringMethod={yClusteringMethod}
+          yClusteringWidth={number('Y clustering width', 150)}
+          yClusteringMethod={select(
+            'Y clustering method',
+            clusteringMethods,
+            'complete',
+          )}
           xLabels={
             wantXLabels
               ? ['sepal length', 'sepal width', 'petal length', 'petal width']

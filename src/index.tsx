@@ -9,6 +9,7 @@ import Map from './Map';
 import { MapNumToNum } from './types';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
+import XDendrogram from './XDendrogram';
 import YDendrogram from './YDendrogram';
 import Legend from './Legend';
 
@@ -16,8 +17,11 @@ export interface IHeatmapProps {
   data: number[][];
   dimensions?: ChartDimensionsConfig;
   colorScale?: (value: number) => string;
-  showLegend?: boolean;
+  legend?: boolean;
   legendTitle?: string;
+  xClustering?: boolean;
+  xClusteringHeight?: number;
+  xClusteringMethod?: AgglomerationMethod;
   yClustering?: boolean;
   yClusteringWidth?: number;
   yClusteringMethod?: AgglomerationMethod;
@@ -31,26 +35,49 @@ export const Heatmap = memo(function Heatmap(
   props: IHeatmapProps,
 ): ReactElement {
   const {
-    xLabels,
+    xClustering = false,
+    xClusteringHeight = 150,
+    xClusteringMethod = 'complete',
     yClustering = false,
-    yClusteringWidth = 175,
+    yClusteringWidth = 150,
     yClusteringMethod = 'complete',
     colorScale = d3.interpolateYlOrRd,
-    showLegend = false,
+    legend = false,
   } = props;
+
+  let additionalMarginTop = 0;
+  if (legend) {
+    additionalMarginTop += legendOffset;
+  }
+  if (xClustering) {
+    additionalMarginTop += xClusteringHeight;
+  }
+
+  let additionalMarginLeft = 0;
+  if (yClustering) {
+    additionalMarginLeft += yClusteringWidth;
+  }
+
   const [ref, dimensions] = useChartDimensions(
     props.dimensions,
-    yClustering ? yClusteringWidth : 0,
-    showLegend ? legendOffset : 0,
+    additionalMarginLeft,
+    additionalMarginTop,
   );
 
   const domain = useDomain(props.data);
 
-  const [hierarchy, yLabels, data] = useYClustering(
+  const [xHierarchy, xLabels, dataAfterX] = useXClustering(
+    xClustering,
+    xClusteringMethod,
+    props.xLabels,
+    props.data,
+  );
+
+  const [yHierarchy, yLabels, data] = useYClustering(
     yClustering,
     yClusteringMethod,
     props.yLabels,
-    props.data,
+    dataAfterX,
   );
 
   const xScale = d3
@@ -76,9 +103,8 @@ export const Heatmap = memo(function Heatmap(
       <Chart dimensions={dimensions}>
         {xLabels && <XAxis labels={xLabels} xAccessor={xAxisAccessor} />}
         {yLabels && <YAxis labels={yLabels} yAccessor={yAxisAccessor} />}
-        {showLegend && (
+        {legend && (
           <Legend
-            offset={legendOffset}
             colorAccessor={colorScale}
             title={props.legendTitle || ''}
             domain={domain}
@@ -92,8 +118,11 @@ export const Heatmap = memo(function Heatmap(
           elementHeight={elementHeight}
           colorAccessor={colorAccessor}
         />
-        {hierarchy && (
-          <YDendrogram hierarchy={hierarchy} width={yClusteringWidth} />
+        {xHierarchy && (
+          <XDendrogram hierarchy={xHierarchy} height={xClusteringHeight} />
+        )}
+        {yHierarchy && (
+          <YDendrogram hierarchy={yHierarchy} width={yClusteringWidth} />
         )}
       </Chart>
     </div>
@@ -149,4 +178,42 @@ function useYClustering(
 
     return [d3Hierarchy, yLabelsCopy, dataCopy.to2DArray()];
   }, [yClustering, yClusteringMethod, yLabels, data]);
+}
+
+function useXClustering(
+  xClustering: boolean,
+  xClusteringMethod: AgglomerationMethod,
+  xLabels: string[] | undefined,
+  data: number[][],
+): [d3.HierarchyNode<Cluster> | null, string[] | undefined, number[][]] {
+  return useMemo(() => {
+    if (!xClustering) {
+      return [null, xLabels, data];
+    }
+
+    const transpose = new Matrix(data).transpose().to2DArray();
+
+    const cluster = agnes(transpose, {
+      method: xClusteringMethod,
+    });
+    const d3Hierarchy = d3.hierarchy(cluster);
+
+    const dataCopy = new Matrix(data);
+    let yLabelsCopy;
+    if (xLabels) {
+      yLabelsCopy = xLabels.slice();
+    }
+
+    const order = cluster.indices();
+    for (let i = 0; i < order.length; i++) {
+      if (order[i] !== i) {
+        dataCopy.setColumn(i, transpose[order[i]]);
+        if (yLabelsCopy && xLabels) {
+          yLabelsCopy[i] = xLabels[order[i]];
+        }
+      }
+    }
+
+    return [d3Hierarchy, yLabelsCopy, dataCopy.to2DArray()];
+  }, [xClustering, xClusteringMethod, xLabels, data]);
 }

@@ -1,27 +1,25 @@
 import { useEffect, useMemo, useRef, useState, MutableRefObject } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 
-interface IChartMargins {
+interface IChartUserDimensions {
   marginTop: number;
   marginRight: number;
   marginBottom: number;
   marginLeft: number;
-}
-
-interface IChartWidthHeight {
   width: number;
   height: number;
 }
 
-interface IChartBounds {
+interface IChartInternalDimensions {
   boundedHeight: number;
   boundedWidth: number;
+  additionalMarginLeft: number;
+  additionalMarginTop: number;
 }
 
-export type ChartDimensionsConfig = Partial<IChartMargins> &
-  Partial<IChartWidthHeight>;
+export type ChartDimensionsConfig = Partial<IChartUserDimensions>;
 
-export type ChartDimensions = IChartMargins & IChartWidthHeight & IChartBounds;
+export type ChartDimensions = IChartUserDimensions & IChartInternalDimensions;
 
 function combineChartDimensions(
   config: ChartDimensionsConfig,
@@ -35,6 +33,8 @@ function combineChartDimensions(
     marginLeft: 5,
     width: 0,
     height: 0,
+    additionalMarginLeft,
+    additionalMarginTop,
     ...config,
   };
 
