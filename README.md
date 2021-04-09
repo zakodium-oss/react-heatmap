@@ -1,4 +1,5 @@
 # @zakodium/react-heatmap
+
 Display beautiful SVG heat maps.
 
 <h3 align="center">
