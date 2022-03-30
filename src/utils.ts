@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, MutableRefObject } from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
 
 interface IChartUserDimensions {
   marginTop: number;
@@ -59,7 +58,7 @@ function combineChartDimensions(
 }
 
 export function useChartDimensions(
-  dimensionsConfig: ChartDimensionsConfig = {},
+  dimensionsConfig: ChartDimensionsConfig | undefined,
   additionalMarginLeft: number,
   additionalMarginTop: number,
 ): [MutableRefObject<any>, ChartDimensions] {
@@ -67,7 +66,7 @@ export function useChartDimensions(
   const dimensions = useMemo(
     () =>
       combineChartDimensions(
-        dimensionsConfig,
+        dimensionsConfig || {},
         additionalMarginLeft,
         additionalMarginTop,
       ),

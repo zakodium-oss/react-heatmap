@@ -1,6 +1,6 @@
-import React from 'react';
 import * as d3 from 'd3';
 import { Cluster } from 'ml-hclust';
+import React from 'react';
 
 import { useContextDimensions } from './Chart';
 

@@ -12,8 +12,8 @@ Display beautiful SVG heat maps.
     Maintained by <a href="https://www.zakodium.com">Zakodium</a>
   </p>
 
-  [![NPM version][npm-image]][npm-url]
-  [![npm download][download-image]][download-url]
+[![NPM version][npm-image]][npm-url]
+[![npm download][download-image]][download-url]
 
 </h3>
 
@@ -23,7 +23,7 @@ Display beautiful SVG heat maps.
 
 ## Live examples
 
-https://zakodium.github.io/react-heatmap
+https://zakodium-oss.github.io/react-heatmap
 
 ## Usage
 
@@ -34,7 +34,11 @@ function App() {
   return (
     <Heatmap
       dimensions={{ height: 600 }} // Do not specify width and let it be responsive
-      data={[[-20, -15, -10], [-5, 0, 5], [10, 15, 20]]}
+      data={[
+        [-20, -15, -10],
+        [-5, 0, 5],
+        [10, 15, 20],
+      ]}
       xLabels={['Column 1', 'Column 2', 'Column 3']}
     />
   );

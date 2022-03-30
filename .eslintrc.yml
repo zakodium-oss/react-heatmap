@@ -1,5 +1,1 @@
-extends:
-  - cheminfo-typescript
-  - cheminfo-react
-rules:
-  '@typescript-eslint/explicit-function-return-type': off
+extends: '@zakodium/eslint-config/typescript-react'

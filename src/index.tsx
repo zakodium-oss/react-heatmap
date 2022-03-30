@@ -1,17 +1,17 @@
-import React, { memo, ReactElement, useMemo } from 'react';
 import * as d3 from 'd3';
 import { agnes, AgglomerationMethod, Cluster } from 'ml-hclust';
 import { Matrix } from 'ml-matrix';
+import React, { memo, ReactElement, useMemo } from 'react';
 
-import { useChartDimensions, ChartDimensionsConfig } from './utils';
 import Chart from './Chart';
-import Map from './Map';
-import { MapNumToNum } from './types';
-import XAxis from './XAxis';
-import YAxis from './YAxis';
-import XDendrogram from './XDendrogram';
-import YDendrogram from './YDendrogram';
 import Legend from './Legend';
+import Map from './Map';
+import XAxis from './XAxis';
+import XDendrogram from './XDendrogram';
+import YAxis from './YAxis';
+import YDendrogram from './YDendrogram';
+import { MapNumToNum } from './types';
+import { useChartDimensions, ChartDimensionsConfig } from './utils';
 
 export interface IHeatmapProps {
   data: number[][];

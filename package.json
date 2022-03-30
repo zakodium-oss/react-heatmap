@@ -15,14 +15,15 @@
     "src"
   ],
   "scripts": {
-    "build-docs": "build-storybook -o docs",
+    "build-storybook": "build-storybook",
     "clean": "rimraf lib lib-esm",
-    "eslint": "eslint src stories --ext ts,tsx --cache",
+    "check-types": "tsc --noEmit",
+    "eslint": "eslint .",
     "eslint-fix": "npm run eslint -- --fix",
-    "prepublishOnly": "npm run tsc",
-    "test": "npm run eslint",
-    "test-coverage": "npm run test-only -- --coverage",
-    "test-only": "jest",
+    "prettier": "prettier --check .",
+    "prettier-write": "prettier --write .",
+    "prepack": "npm run tsc",
+    "test": "npm run eslint && npm run check-types && npm run prettier",
     "tsc": "npm run clean && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc --project tsconfig.cjs.json",
     "tsc-esm": "tsc --project tsconfig.esm.json",
@@ -30,60 +31,36 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zakodium/react-heatmap.git"
+    "url": "git+https://github.com/zakodium-oss/react-heatmap.git"
   },
   "bugs": {
-    "url": "https://github.com/zakodium/react-heatmap/issues"
+    "url": "https://github.com/zakodium-oss/react-heatmap/issues"
   },
-  "homepage": "https://github.com/zakodium/react-heatmap#readme",
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "all"
-  },
+  "homepage": "https://github.com/zakodium-oss/react-heatmap#readme",
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@storybook/addon-actions": "^5.2.6",
-    "@storybook/addon-knobs": "^5.2.6",
-    "@storybook/addon-links": "^5.2.6",
-    "@storybook/addons": "^5.2.6",
-    "@storybook/react": "^5.2.6",
-    "@types/d3": "^5.7.2",
-    "@types/jest": "^24.0.23",
-    "@types/node": "^12.12.11",
-    "@types/react": "^16.9.11",
-    "@typescript-eslint/eslint-plugin": "^2.8.0",
-    "@typescript-eslint/parser": "^2.8.0",
-    "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.6",
-    "eslint": "^6.6.0",
-    "eslint-config-cheminfo": "^2.0.4",
-    "eslint-config-cheminfo-react": "^3.1.2",
-    "eslint-config-cheminfo-typescript": "^4.1.2",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^23.0.4",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-react-hooks": "^2.3.0",
-    "jest": "^24.9.0",
-    "ml-dataset-iris": "^1.1.1",
-    "ml-matrix": "^6.4.1",
-    "prettier": "^1.19.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "rimraf": "^3.0.0",
-    "ts-jest": "^24.2.0",
-    "typescript": "^3.7.2"
+    "@babel/core": "^7.17.8",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/addon-storysource": "^6.4.19",
+    "@storybook/react": "^6.4.19",
+    "@types/d3": "^6.0.0",
+    "@types/node": "^17.0.23",
+    "@types/react": "^17.0.43",
+    "@zakodium/eslint-config": "^5.1.1",
+    "eslint": "^8.12.0",
+    "ml-dataset-iris": "^1.2.1",
+    "ml-matrix": "^6.9.0",
+    "prettier": "^2.6.1",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
-    "d3": "^5.14.2",
-    "ml-hclust": "^3.0.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "d3": "^6.0.0",
+    "ml-hclust": "^3.1.0"
+  },
+  "volta": {
+    "node": "16.14.2"
   }
 }

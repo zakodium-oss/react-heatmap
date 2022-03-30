@@ -1,4 +1,6 @@
-# [2.0.0](https://github.com/zakodium/react-heatmap/compare/v1.1.0...v2.0.0) (2019-11-25)
+# Changelog
+
+## [2.0.0](https://github.com/zakodium/react-heatmap/compare/v1.1.0...v2.0.0) (2019-11-25)
 
 
 ### Bug Fixes

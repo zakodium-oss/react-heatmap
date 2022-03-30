@@ -1,8 +1,8 @@
-import React, { ReactNode, Fragment } from 'react';
 import * as d3 from 'd3';
+import React, { ReactNode, Fragment } from 'react';
 
-import { MapNumToStr } from './types';
 import { useContextDimensions } from './Chart';
+import { MapNumToStr } from './types';
 
 interface LegendProps {
   colorAccessor: MapNumToStr;
@@ -14,11 +14,7 @@ export default function Legend(props: LegendProps) {
   const dimensions = useContextDimensions();
   const gradient = useLinearGradient(props.colorAccessor);
 
-  const scale = d3
-    .scaleLinear()
-    .domain(props.domain)
-    .range([0, 250])
-    .nice();
+  const scale = d3.scaleLinear().domain(props.domain).range([0, 250]).nice();
   const ticks = scale.ticks(5);
 
   return (
